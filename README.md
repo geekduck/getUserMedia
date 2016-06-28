@@ -2,6 +2,8 @@
 
 getUserMediaを使用してカメラからの映像を表示しつつ、任意のタイミングで画像として保存する
 
+chromeでのみ動作を確認
+
 http://geekduck.github.io/getUserMedia/
 
 ### getUserMediaのハマりポイント
