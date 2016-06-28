@@ -15,7 +15,7 @@ window.onload = function() {
       });
       render(videoSroucesArray);
     });
-    
+
     /**
      * カメラを選択するセレクトボックスを組み立てる
      */
@@ -33,6 +33,7 @@ window.onload = function() {
      * カメラの再生を開始する
      */
     function start(e) {
+        // 既にカメラと接続していたら停止
         if (currentStream) {
             currentStream.getVideoTracks().forEach(function(devise) {
                 devise.stop();
@@ -40,7 +41,6 @@ window.onload = function() {
             currentStream = null;
         }
 
-        // ブランクを選ばれたら
         if (e.target.value === "") {
             return;
         }
@@ -67,7 +67,6 @@ window.onload = function() {
     selectBox.addEventListener('change', start, false);
 
     function download() {
-      console.log("download");
         var cEle = document.createElement('canvas');
         var cCtx = cEle.getContext('2d');
         var vEle = document.querySelector('#video');
