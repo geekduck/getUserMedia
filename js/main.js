@@ -1,31 +1,21 @@
 window.onload = function() {
     'use strict';
 
-    navigator.getUserMedia = (navigator.getUserMedia
-                              || navigator.webkitGetUserMedia
-                              || navigator.mozGetUserMedia
-                              || navigator.msGetUserMedia);
-
-    if (navigator.getUserMedia === undefined) {
+    // getUserMedia非対応チェック
+    if (navigator.mediaDevices.getUserMedia === undefined || navigator.mediaDevices.enumerateDevices === undefined) {
         console.error('getUserMedia is not supported by the browser.');
         return;
     }
 
-    if (navigator.mediaDevices && typeof navigator.mediaDevices.enumerateDevices === 'function') {
-        navigator.mediaDevices.enumerateDevices().then(_getVideoSources);
-    }
-
-    /**
-     * 取得できたカメラとマイクを含むデバイスからカメラだけをフィルターする
-     */
-    function _getVideoSources(sourcesInfo) {
-        // カメラのインターフェースだけ取得する
-        var videoSroucesArray = sourcesInfo.filter(function(elem) {
-            return elem.kind == 'videoinput';
-        });
-        render(videoSroucesArray);
-    }
-
+    // 接続されているカメラとマイクのMediaStreamオブジェクトを取得する
+    navigator.mediaDevices.enumerateDevices().then(function(sourcesInfo) {
+      // 取得できたカメラとマイクを含むデバイスからカメラだけをフィルターする
+      var videoSroucesArray = sourcesInfo.filter(function(elem) {
+          return elem.kind == 'videoinput';
+      });
+      render(videoSroucesArray);
+    });
+    
     /**
      * カメラを選択するセレクトボックスを組み立てる
      */
@@ -63,7 +53,7 @@ window.onload = function() {
             }
         };
         // Video と Audioのキャプチャを開始
-        navigator.getUserMedia(constraints, function(stream) {
+        navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
             currentStream = stream; // カメラを切り替えた時に停止するため格納
             var $video = document.querySelector('#video');
             $video.src = window.URL.createObjectURL(stream);
